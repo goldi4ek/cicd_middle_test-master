@@ -11,7 +11,8 @@ def main(request):
     return render(request, 'main.html', context)
 
 
-def category_detail(request, category_id):
-    category = get_object_or_404(Category, id=category_id)
-    category_recipes = Recipe.objects.filter(category=category)
-    return render(request, 'category_detail.html', {'recipes': category_recipes, 'category': category})
+def recipe_detail(request, pk):
+    context = {
+        "recipe": Recipe.objects.get(pk=pk)
+    }
+    return render(request, 'recipe_detail.html', context)
