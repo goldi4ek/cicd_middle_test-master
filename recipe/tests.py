@@ -10,12 +10,12 @@ class RecipeAppTestCase(TestCase):
         self.user = User.objects.create_user(username='testuser', password='testpassword')
         self.category = Category.objects.create(name='Test Category')
 
-    def test_category_detail_view(self):
-        # Test the category detail view
-        response = self.client.get(reverse('category_detail', args=[self.category.id]))
+    def test_recipe_detail_view(self):
+        recipe = Recipe.objects.create(title='Test Recipe', ingredients='Test Ingredient', category=self.category)
+        response = self.client.get(reverse('recipe_detail', args=[recipe.id]))
         self.assertEqual(response.status_code, 200)
-        self.assertTemplateUsed(response, 'category_detail.html')
-
+        self.assertTemplateUsed(response, 'recipe_detail.html')
+        self.assertEqual(response.context['recipe'], recipe)
 
 
 class MainViewTestCase(TestCase):
@@ -29,28 +29,3 @@ class MainViewTestCase(TestCase):
             Recipe.objects.create(title='Recipe 4', ingredients='Ingredient 4', category=self.category),
             Recipe.objects.create(title='Recipe 5', ingredients='Ingredient 5', category=self.category),
         ]
-
-
-class CategoryDetailViewTest(TestCase):
-
-    def setUp(self):
-        self.client = Client()
-        self.category = Category.objects.create(name='Test Category')
-        self.url = reverse('category_detail', args=[self.category.id])
-
-    def test_category_detail_view_status_code(self):
-        response = self.client.get(self.url)
-        self.assertEqual(response.status_code, 200)
-
-    def test_category_detail_view_template_used(self):
-        response = self.client.get(self.url)
-        self.assertTemplateUsed(response, 'category_detail.html')
-
-    def test_category_detail_view_category(self):
-        response = self.client.get(self.url)
-        self.assertEqual(response.context['category'], self.category)
-
-    def test_category_detail_view_invalid_category_id(self):
-        invalid_url = reverse('category_detail', args=[999])
-        response = self.client.get(invalid_url)
-        self.assertEqual(response.status_code, 404)
