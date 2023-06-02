@@ -47,7 +47,7 @@ class CategoryModelTests(TestCase):
         self.assertEqual(str(self.category), 'Test Category')
 
     def test_iter(self):
-        self.assertEqual(list(self.category), [])  # empty because no related categories yet
+        self.assertEqual(list(self.category), [])
 
 
 class RecipeModelTests(TestCase):
