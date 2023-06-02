@@ -1,12 +1,14 @@
 from django.shortcuts import render, get_object_or_404
 from .models import Recipe, Category
+from datetime import date
 import random
 
 
 def main(request):
-    recipes = Recipe.objects.all()
-    random_recipes = random.sample(list(recipes), 10)
-    return render(request, 'main.html', {'recipes': random_recipes})
+    context = {
+        "recipe": Recipe.objects.filter(created_date__year=2023)
+    }
+    return render(request, 'main.html', context)
 
 
 def category_detail(request, category_id):
