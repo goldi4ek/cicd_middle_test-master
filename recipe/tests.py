@@ -18,14 +18,48 @@ class RecipeAppTestCase(TestCase):
         self.assertEqual(response.context['recipe'], recipe)
 
 
-class MainViewTestCase(TestCase):
+class ViewsTests(TestCase):
     def setUp(self):
-        self.factory = RequestFactory()
-        self.category = Category.objects.create(name='Main Course')
-        self.recipes = [
-            Recipe.objects.create(title='Recipe 1', ingredients='Ingredient 1', category=self.category),
-            Recipe.objects.create(title='Recipe 2', ingredients='Ingredient 2', category=self.category),
-            Recipe.objects.create(title='Recipe 3', ingredients='Ingredient 3', category=self.category),
-            Recipe.objects.create(title='Recipe 4', ingredients='Ingredient 4', category=self.category),
-            Recipe.objects.create(title='Recipe 5', ingredients='Ingredient 5', category=self.category),
-        ]
+        self.client = Client()
+        self.user = User.objects.create_user(
+            username='testuser', email='testuser@example.com', password='testpass')
+        self.category = Category.objects.create(name='Test Category')
+        self.recipe = Recipe.objects.create(
+            title='Test Recipe',
+            description='This is a test recipe.',
+            instructions='Test instruction 1\nTest instruction 2',
+            ingredients='Test ingredient 1\nTest ingredient 2',
+            category=self.category,
+        )
+
+    def test_main_view(self):
+        url = reverse('main')
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, 'Test Recipe')
+        self.assertNotContains(response, 'Old Recipe')
+        self.assertEqual(len(response.context['recipes']), 1)
+class CategoryModelTests(TestCase):
+    def setUp(self):
+        self.category = Category.objects.create(name='Test Category')
+
+    def test_str(self):
+        self.assertEqual(str(self.category), 'Test Category')
+
+    def test_iter(self):
+        self.assertEqual(list(self.category), [])  # empty because no related categories yet
+
+
+class RecipeModelTests(TestCase):
+    def setUp(self):
+        self.category = Category.objects.create(name='Test Category')
+        self.recipe = Recipe.objects.create(
+            title='Test Recipe',
+            description='This is a test recipe.',
+            instructions='Test instruction 1\nTest instruction 2',
+            ingredients='Test ingredient 1\nTest ingredient 2',
+            category=self.category,
+        )
+
+    def test_str(self):
+        self.assertEqual(str(self.recipe), 'Test Recipe')

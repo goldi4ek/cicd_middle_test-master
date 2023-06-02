@@ -1,7 +1,5 @@
 from django.shortcuts import render, get_object_or_404
 from .models import Recipe, Category
-from datetime import date
-import random
 
 
 def main(request):
