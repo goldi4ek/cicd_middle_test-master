@@ -6,7 +6,7 @@ import random
 
 def main(request):
     context = {
-        "recipe": Recipe.objects.filter(created_date__year=2023)
+        "recipes": Recipe.objects.filter(created_at__year=2023)
     }
     return render(request, 'main.html', context)
 
